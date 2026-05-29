@@ -1,0 +1,21 @@
+# Build artifacts
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Compiled plugin binaries
+packer-plugin-studio-cp
+
+# Test binaries / output
+*.test
+*.out
+
+# Packer runtime
+crash.log
+crash.*.log
+
+# macOS
+.DS_Store

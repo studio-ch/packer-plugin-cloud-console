@@ -1,0 +1,57 @@
+packer {
+  required_plugins {
+    studio-cp = {
+      version = ">= 0.1.0"
+      source  = "github.com/studio-ch/studio-cp"
+    }
+  }
+}
+
+# Minimal macOS build:
+#   1. pull a base OCI image into the tenant catalog (temporary)
+#   2. boot a builder VM and reach it over SSH
+#   3. run a provisioner
+#   4. shut down and push the result as a new OCI image
+#
+# api_endpoint / api_token fall back to the STUDIO_CP_API_ENDPOINT and
+# STUDIO_CP_API_TOKEN environment variables when omitted.
+
+source "studio-cp" "macos" {
+  api_endpoint = "https://api.studio.cp"
+  # api_token  = "..."   # prefer STUDIO_CP_API_TOKEN
+
+  region_id = "00000000-0000-0000-0000-000000000000"
+  name      = "packer-macos"
+
+  cpu_cores = 4
+  memory    = 8
+  disk      = 64
+
+  # Base image: pull a public OCI reference. Use `image = "<catalog-name>"`
+  # instead to build from an existing catalog entry.
+  pull_image = "ghcr.io/studio-ch/macos-sequoia:latest"
+
+  # Reachability: allocate a public elastic IP for SSH (default true).
+  use_elastic_ip = true
+
+  # Communicator. When no ssh_key_ids are given the plugin generates an
+  # ephemeral keypair, registers it, and tears it down on completion.
+  communicator = "ssh"
+
+  # Push target: the provisioned VM is shut down and pushed here.
+  push_image    = "ghcr.io/studio-ch/macos-built:latest"
+  push_username = "studio-ch"
+  # push_password = "..."
+  push_precache = false
+}
+
+build {
+  sources = ["source.studio-cp.macos"]
+
+  provisioner "shell" {
+    inline = [
+      "echo 'provisioning the studio-cp builder VM'",
+      "sw_vers || uname -a",
+    ]
+  }
+}
