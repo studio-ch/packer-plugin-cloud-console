@@ -1,103 +1,126 @@
-# packer-plugin
+# Cloud Console Packer Plugin
 
-A [HashiCorp Packer](https://www.packer.io) builder plugin that builds VM
-images by driving the **studio-cp tenant REST API** with a Bearer API key.
+A [HashiCorp Packer](https://www.packer.io) builder plugin for creating custom
+**macOS virtual machine images on Xcloud**. It lets you bake your own base
+images — pre-installed tools, Xcode versions, CI runners, certificates — and
+publish them straight into your Cloud Console image catalog.
 
-It registers a base image, boots a builder VM, provisions it over SSH, shuts
-it down, and pushes the result as an OCI image — all through the public `/v1`
-API surface. It has **no** dependency on the upstream xcloud Go module, gRPC,
-mTLS, proto, or VNC.
+The plugin talks to the public Cloud Console API with your API key: it
+provisions a builder VM, connects over SSH, runs your provisioners, shuts the
+VM down, and pushes the result as a reusable OCI image. No VPN, certificates,
+or low-level cluster access required.
 
-> **Standalone module.** This folder is a self-contained Go module
-> (`github.com/studio-ch/packer-plugin-studio-cp`) and can be installed directly
-> with `go install github.com/studio-ch/packer-plugin-studio-cp@latest`. It has
-> its own `go.mod` and is independent of any Node/pnpm workspace.
+## Install
 
-## Build
+Add the plugin to your template and let Packer fetch it:
 
-```bash
-cd packer-plugin
-go build ./...
+```hcl
+packer {
+  required_plugins {
+    studio-cp = {
+      version = ">= 0.1.0"
+      source  = "github.com/studio-ch/studio-cp"
+    }
+  }
+}
 ```
 
-To install for local Packer use:
+```bash
+packer init .
+```
+
+Or build and install it manually:
 
 ```bash
+go install github.com/studio-ch/packer-plugin-studio-cp@latest
+# or, for a local checkout:
 go build -o ~/.packer.d/plugins/packer-plugin-studio-cp .
 ```
 
 ## Authentication
 
-The plugin authenticates with a tenant API key sent as
-`Authorization: Bearer <token>`. Mutations require the `write:resources`
-scope (enforced server-side) and the `xcloud` service entitlement.
+Create an API key in Cloud Console (with the `write:resources` scope and the
+Xcloud service enabled), then provide it to the plugin. The key is sent as
+`Authorization: Bearer <token>`.
 
-| Config field   | Environment fallback        |
-| -------------- | --------------------------- |
-| `api_endpoint` | `STUDIO_CP_API_ENDPOINT`    |
-| `api_token`    | `STUDIO_CP_API_TOKEN`       |
+| Config field   | Environment fallback     |
+| -------------- | ------------------------ |
+| `api_endpoint` | `STUDIO_CP_API_ENDPOINT` |
+| `api_token`    | `STUDIO_CP_API_TOKEN`    |
+
+## Quick start
+
+See [`example.pkr.hcl`](./example.pkr.hcl) for a complete macOS build. The
+short version:
+
+```hcl
+source "studio-cp" "macos" {
+  region_id  = "<your-region-uuid>"
+  pull_image = "ghcr.io/your-org/macos-base:latest"  # base to build from
+  push_image = "ghcr.io/your-org/macos-built:latest" # where the result lands
+}
+
+build {
+  sources = ["source.studio-cp.macos"]
+
+  provisioner "shell" {
+    inline = ["sw_vers", "echo 'baking the image'"]
+  }
+}
+```
+
+```bash
+export STUDIO_CP_API_ENDPOINT="https://<your-cloud-console-host>"
+export STUDIO_CP_API_TOKEN="<your-api-key>"
+packer build example.pkr.hcl
+```
 
 ## Configuration
 
 | Field                | Type      | Default          | Notes |
 | -------------------- | --------- | ---------------- | ----- |
-| `api_endpoint`       | string    | — (required)     | API host, with or without scheme. |
-| `api_token`          | string    | — (required)     | Tenant API key. |
+| `api_endpoint`       | string    | — (required)     | Cloud Console API host, with or without scheme. |
+| `api_token`          | string    | — (required)     | Your API key. |
 | `region_id`          | string    | — (required)     | Region UUID. |
-| `name`               | string    | `packer-<8hex>`  | Instance name. |
+| `name`               | string    | `packer-<8hex>`  | Builder VM name. |
 | `cpu_cores`          | int       | `4`              | |
 | `memory`             | int       | `8`              | GiB. |
 | `disk`               | int       | `64`             | GiB. |
 | `network`            | string    | `default`        | Network name to attach. |
 | `image`              | string    | —                | Existing catalog image (mutually exclusive with `pull_image`). |
-| `pull_image`         | string    | —                | OCI reference to register before build (deleted on cleanup). |
-| `pull_username`      | string    | —                | Ad-hoc registry username for `pull_image`. |
-| `pull_password`      | string    | —                | Ad-hoc registry password for `pull_image`. |
-| `pull_credential_id` | string    | —                | Saved tenant registry credential id (alternative to user/pass). |
+| `pull_image`         | string    | —                | OCI reference to register before the build (removed on cleanup). |
+| `pull_username`      | string    | —                | Registry username for `pull_image`. |
+| `pull_password`      | string    | —                | Registry password for `pull_image`. |
+| `pull_credential_id` | string    | —                | Saved registry credential id (alternative to user/pass). |
 | `pull_precache`      | bool      | `false`          | |
-| `admin_username`     | string    | server-resolved  | Falls back to image label, then `admin`. |
-| `ssh_key_ids`        | list      | —                | Existing tenant SSH key ids. When empty + ssh, an ephemeral key is generated. |
+| `admin_username`     | string    | server-resolved  | Falls back to the image label, then `admin`. |
+| `ssh_key_ids`        | list      | —                | Existing SSH key ids. When empty, an ephemeral key is generated for the build. |
 | `use_elastic_ip`     | bool      | `true`           | Allocate a public IP for SSH; otherwise use the private address. |
-| `push_image`         | string    | —                | OCI reference to push the built VM to. |
+| `push_image`         | string    | —                | OCI reference to push the finished image to. |
 | `push_username`      | string    | —                | |
 | `push_password`      | string    | —                | |
-| `push_credential_id` | string    | —                | Saved tenant registry credential id. |
-| `push_precache`      | bool      | `false`          | |
-| `keep_vm`            | bool      | `false`          | Skip teardown of the VM and temp resources. |
+| `push_credential_id` | string    | —                | Saved registry credential id. |
+| `push_precache`      | bool      | `false`          | Pre-pull the pushed image onto every node for faster first boot. |
+| `keep_vm`            | bool      | `false`          | Skip teardown of the VM and temporary resources. |
 | `poll_interval`      | duration  | `5s`             | |
 | `state_timeout`      | duration  | `20m`            | |
 | `communicator`       | string    | `ssh`            | Only `ssh` or `none`. |
 
-See [`example.pkr.hcl`](./example.pkr.hcl) for a complete macOS build.
-
-## Build lifecycle (SSH)
+## How a build runs
 
 1. **Register image** — register `pull_image` as a temporary catalog image
    (skipped when `image` is used).
-2. **SSH key** — when `ssh_key_ids` is empty, generate an ephemeral ed25519
-   keypair and register it.
+2. **SSH key** — when `ssh_key_ids` is empty, an ephemeral ed25519 keypair is
+   generated and registered for the build.
 3. **Create network** — optional (off by default; uses `network`).
-4. **Create instance** — `POST /v1/xcloud/instances`.
-5. **Wait running** — poll until `status == running` with no pending action.
-6. **Resolve address** — poll the elastic IP until bound, or use the private
-   `networkAddress`.
-7. **Connect + provision** — Packer SSH communicator + provisioners.
-8. **Shutdown + push** — graceful shutdown, then `push-image` job (only when
-   `push_image` is set).
+4. **Create instance** — the builder VM is created and started.
+5. **Wait running** — poll until the VM is running and ready.
+6. **Resolve address** — wait for the elastic IP to bind, or use the private
+   address.
+7. **Connect + provision** — Packer's SSH communicator runs your provisioners.
+8. **Shutdown + push** — the VM is shut down gracefully and pushed as an OCI
+   image (only when `push_image` is set).
 
-All created resources (instance, elastic IP, temp image/network, ephemeral
-SSH key) are torn down on cleanup unless `keep_vm` is set.
-
-## Out of scope
-
-The REST API does not expose VNC keyboard automation, IPSW image import, or
-API-key region discovery, so those upstream-plugin features are intentionally
-absent here.
-
-## Generate
-
-The HCL2 spec is generated from the `Config` struct:
-
-```bash
-go generate ./...
-```
+All resources created during the build (VM, elastic IP, temporary image and
+network, ephemeral SSH key) are cleaned up automatically unless `keep_vm` is
+set.
