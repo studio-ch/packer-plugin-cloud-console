@@ -17,7 +17,7 @@ packer {
 # CLOUD_CONSOLE_API_TOKEN environment variables when omitted.
 
 source "xcloud" "macos" {
-  api_endpoint = "https://api.studio.cp"
+  api_endpoint = "https://<your-cloud-console-host>"
   # api_token  = "..."   # prefer CLOUD_CONSOLE_API_TOKEN
 
   region_id = "00000000-0000-0000-0000-000000000000"

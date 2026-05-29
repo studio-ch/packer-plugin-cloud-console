@@ -14,7 +14,7 @@ import (
 )
 
 // BuilderId uniquely identifies artifacts produced by this builder.
-const BuilderId = "work.studio.cp"
+const BuilderId = "studio-ch.xcloud"
 
 type Builder struct {
 	config Config
