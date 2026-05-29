@@ -1,4 +1,4 @@
-module github.com/studio-ch/packer-plugin-cloud-console
+module github.com/studio-ch/packer-plugin-xcloud
 
 go 1.25.10
 

@@ -17,9 +17,9 @@ Add the plugin to your template and let Packer fetch it:
 ```hcl
 packer {
   required_plugins {
-    cloud-console = {
+    xcloud = {
       version = ">= 0.1.0"
-      source  = "github.com/studio-ch/cloud-console"
+      source  = "github.com/studio-ch/xcloud"
     }
   }
 }
@@ -32,9 +32,9 @@ packer init .
 Or build and install it manually:
 
 ```bash
-go install github.com/studio-ch/packer-plugin-cloud-console@latest
+go install github.com/studio-ch/packer-plugin-xcloud@latest
 # or, for a local checkout:
-go build -o ~/.packer.d/plugins/packer-plugin-cloud-console .
+go build -o ~/.packer.d/plugins/packer-plugin-xcloud .
 ```
 
 ## Authentication
@@ -54,14 +54,14 @@ See [`example.pkr.hcl`](./example.pkr.hcl) for a complete macOS build. The
 short version:
 
 ```hcl
-source "cloud-console" "macos" {
+source "xcloud" "macos" {
   region_id  = "<your-region-uuid>"
   pull_image = "ghcr.io/your-org/macos-base:latest"  # base to build from
   push_image = "ghcr.io/your-org/macos-built:latest" # where the result lands
 }
 
 build {
-  sources = ["source.cloud-console.macos"]
+  sources = ["source.xcloud.macos"]
 
   provisioner "shell" {
     inline = ["sw_vers", "echo 'baking the image'"]

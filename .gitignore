@@ -7,7 +7,7 @@
 *.dylib
 
 # Compiled plugin binaries
-packer-plugin-cloud-console
+packer-plugin-xcloud
 
 # Test binaries / output
 *.test

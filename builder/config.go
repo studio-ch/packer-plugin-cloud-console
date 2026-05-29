@@ -15,12 +15,12 @@ import (
 
 //go:generate packer-sdc mapstructure-to-hcl2 -type Config
 
-// Config is the cloud-console Packer builder configuration. It is decoded from
+// Config is the xcloud Packer builder configuration. It is decoded from
 // the HCL/JSON template via mapstructure and validated in prepare().
 type Config struct {
 	common.PackerConfig `mapstructure:",squash"`
 
-	// cloud-console API connection. Falls back to CLOUD_CONSOLE_* environment
+	// xcloud API connection. Falls back to CLOUD_CONSOLE_* environment
 	// variables. APIEndpoint is the API host (with or without scheme);
 	// APIToken is a tenant API key with the write:resources scope.
 	APIEndpoint string `mapstructure:"api_endpoint"`
@@ -185,7 +185,7 @@ func (c *Config) prepare() ([]string, error) {
 
 func (c *Config) decode(raws ...any) error {
 	return config.Decode(c, &config.DecodeOpts{
-		PluginType:         "cloud-console",
+		PluginType:         "xcloud",
 		Interpolate:        true,
 		InterpolateContext: &c.ctx,
 		InterpolateFilter:  &interpolate.RenderFilter{},

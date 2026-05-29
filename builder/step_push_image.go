@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 
-	"github.com/studio-ch/packer-plugin-cloud-console/apiclient"
+	"github.com/studio-ch/packer-plugin-xcloud/apiclient"
 )
 
 // StepPushImage enqueues an image-push job for the stopped instance and polls

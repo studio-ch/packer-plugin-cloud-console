@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 
-	"github.com/studio-ch/packer-plugin-cloud-console/apiclient"
+	"github.com/studio-ch/packer-plugin-xcloud/apiclient"
 )
 
 // StepSSHKey generates an ephemeral ed25519 keypair, registers the public key

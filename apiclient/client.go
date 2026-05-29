@@ -1,4 +1,4 @@
-// Package apiclient is a thin REST client for the cloud-console tenant API.
+// Package apiclient is a thin REST client for the xcloud tenant API.
 //
 // It speaks the public /v1 surface with a Bearer API key. It intentionally
 // has no dependency on the upstream xcloud Go module, gRPC, mTLS or proto:
@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-// Client is a tenant-scoped cloud-console REST client.
+// Client is a tenant-scoped xcloud REST client.
 type Client struct {
 	endpoint string
 	token    string
@@ -56,7 +56,7 @@ func (e *APIError) Error() string {
 	if msg == "" {
 		msg = http.StatusText(e.Status)
 	}
-	return fmt.Sprintf("cloud-console API error %d: %s", e.Status, msg)
+	return fmt.Sprintf("xcloud API error %d: %s", e.Status, msg)
 }
 
 // doJSON performs a request against path (relative to the /v1 prefix),

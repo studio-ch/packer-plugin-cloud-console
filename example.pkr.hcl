@@ -1,8 +1,8 @@
 packer {
   required_plugins {
-    cloud-console = {
+    xcloud = {
       version = ">= 0.1.0"
-      source  = "github.com/studio-ch/cloud-console"
+      source  = "github.com/studio-ch/xcloud"
     }
   }
 }
@@ -16,7 +16,7 @@ packer {
 # api_endpoint / api_token fall back to the CLOUD_CONSOLE_API_ENDPOINT and
 # CLOUD_CONSOLE_API_TOKEN environment variables when omitted.
 
-source "cloud-console" "macos" {
+source "xcloud" "macos" {
   api_endpoint = "https://api.studio.cp"
   # api_token  = "..."   # prefer CLOUD_CONSOLE_API_TOKEN
 
@@ -46,11 +46,11 @@ source "cloud-console" "macos" {
 }
 
 build {
-  sources = ["source.cloud-console.macos"]
+  sources = ["source.xcloud.macos"]
 
   provisioner "shell" {
     inline = [
-      "echo 'provisioning the cloud-console builder VM'",
+      "echo 'provisioning the xcloud builder VM'",
       "sw_vers || uname -a",
     ]
   }

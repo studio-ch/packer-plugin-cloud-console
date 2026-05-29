@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/studio-ch/packer-plugin-cloud-console/apiclient"
+	"github.com/studio-ch/packer-plugin-xcloud/apiclient"
 )
 
 // cleanupContext returns a short-lived context for teardown API calls so a
