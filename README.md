@@ -19,7 +19,9 @@ packer {
   required_plugins {
     xcloud = {
       version = ">= 0.1.0"
-      source  = "github.com/studio-ch/xcloud"
+      # Packer source addresses omit the "packer-plugin-" repo prefix.
+      # This resolves to the repo github.com/studio-ch/packer-plugin-xcloud.
+      source = "github.com/studio-ch/xcloud"
     }
   }
 }
