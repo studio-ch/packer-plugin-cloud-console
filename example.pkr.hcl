@@ -1,13 +1,8 @@
-# NOTE: `packer init` auto-install resolves a source `github.com/<org>/<name>`
-# to the GitHub repo `github.com/<org>/packer-plugin-<name>`. This plugin lives
-# in `github.com/studio-ch/packer-plugin`, which does not match that convention,
-# so install it manually (see README) until a `packer-plugin-studio-cp` repo +
-# release exists. With a manual install the required_plugins block is optional.
 packer {
   required_plugins {
     studio-cp = {
       version = ">= 0.1.0"
-      source  = "github.com/studio-ch/packer-plugin"
+      source  = "github.com/studio-ch/studio-cp"
     }
   }
 }

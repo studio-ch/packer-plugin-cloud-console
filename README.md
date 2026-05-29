@@ -9,9 +9,9 @@ API surface. It has **no** dependency on the upstream xcloud Go module, gRPC,
 mTLS, proto, or VNC.
 
 > **Standalone module.** This folder is a self-contained Go module
-> (`github.com/studio-ch/packer-plugin`) and can be installed directly with
-> `go install github.com/studio-ch/packer-plugin@latest`. It has its own
-> `go.mod` and is independent of any Node/pnpm workspace.
+> (`github.com/studio-ch/packer-plugin-studio-cp`) and can be installed directly
+> with `go install github.com/studio-ch/packer-plugin-studio-cp@latest`. It has
+> its own `go.mod` and is independent of any Node/pnpm workspace.
 
 ## Build
 

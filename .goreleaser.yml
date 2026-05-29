@@ -1,0 +1,68 @@
+# Visit https://goreleaser.com for documentation on how to customize this
+# behavior. This config is adapted from the canonical HashiCorp
+# packer-plugin-scaffolding .goreleaser.yml, upgraded to GoReleaser v2.
+version: 2
+
+# The project name must match the GitHub repo / plugin binary name so the
+# produced artifacts are named packer-plugin-studio-cp_* (otherwise GoReleaser
+# would derive the name from the working directory).
+project_name: packer-plugin-studio-cp
+
+env:
+  - CGO_ENABLED=0
+
+before:
+  hooks:
+    # We strongly recommend running tests to catch any regression before release.
+    - go test ./...
+
+builds:
+  - mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath # removes all file system paths from the compiled executable
+    ldflags:
+      - '-s -w'
+    goos:
+      - freebsd
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      # Packer plugins are not distributed for these combinations.
+      - goos: freebsd
+        goarch: arm64
+    # The "x5.0" segment is the Packer plugin API version this SDK implements.
+    # `packer init` requires it in the artifact name to resolve the plugin.
+    binary: '{{ .ProjectName }}_v{{ .Version }}_x5.0_{{ .Os }}_{{ .Arch }}'
+
+archives:
+  - formats: ['zip']
+    files:
+      - none*
+    name_template: '{{ .ProjectName }}_v{{ .Version }}_x5.0_{{ .Os }}_{{ .Arch }}'
+
+checksum:
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_SHA256SUMS'
+  algorithm: sha256
+
+signs:
+  - artifacts: checksum
+    args:
+      # When run in a CI/non-interactive pipeline the --batch flag is required.
+      - "--batch"
+      - "--local-user"
+      - "{{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
+
+release:
+  # Uncomment to inspect the release before it goes live:
+  # draft: true
+
+changelog:
+  disable: true

@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 
-	"github.com/studio-ch/packer-plugin/apiclient"
+	"github.com/studio-ch/packer-plugin-studio-cp/apiclient"
 )
 
 // StepCreateNetwork creates a temporary tenant network when the build opted

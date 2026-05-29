@@ -1,4 +1,4 @@
-module github.com/studio-ch/packer-plugin
+module github.com/studio-ch/packer-plugin-studio-cp
 
 go 1.25.10
 

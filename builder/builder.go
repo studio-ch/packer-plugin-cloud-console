@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/multistep/commonsteps"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 
-	"github.com/studio-ch/packer-plugin/apiclient"
+	"github.com/studio-ch/packer-plugin-studio-cp/apiclient"
 )
 
 // BuilderId uniquely identifies artifacts produced by this builder.

@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/plugin"
 	"github.com/hashicorp/packer-plugin-sdk/version"
 
-	"github.com/studio-ch/packer-plugin/builder"
+	"github.com/studio-ch/packer-plugin-studio-cp/builder"
 )
 
 var pluginVersion = version.NewPluginVersion("0.1.0", "", "")
