@@ -1,8 +1,8 @@
 packer {
   required_plugins {
-    studio-cp = {
+    cloud-console = {
       version = ">= 0.1.0"
-      source  = "github.com/studio-ch/studio-cp"
+      source  = "github.com/studio-ch/cloud-console"
     }
   }
 }
@@ -13,12 +13,12 @@ packer {
 #   3. run a provisioner
 #   4. shut down and push the result as a new OCI image
 #
-# api_endpoint / api_token fall back to the STUDIO_CP_API_ENDPOINT and
-# STUDIO_CP_API_TOKEN environment variables when omitted.
+# api_endpoint / api_token fall back to the CLOUD_CONSOLE_API_ENDPOINT and
+# CLOUD_CONSOLE_API_TOKEN environment variables when omitted.
 
-source "studio-cp" "macos" {
+source "cloud-console" "macos" {
   api_endpoint = "https://api.studio.cp"
-  # api_token  = "..."   # prefer STUDIO_CP_API_TOKEN
+  # api_token  = "..."   # prefer CLOUD_CONSOLE_API_TOKEN
 
   region_id = "00000000-0000-0000-0000-000000000000"
   name      = "packer-macos"
@@ -46,11 +46,11 @@ source "studio-cp" "macos" {
 }
 
 build {
-  sources = ["source.studio-cp.macos"]
+  sources = ["source.cloud-console.macos"]
 
   provisioner "shell" {
     inline = [
-      "echo 'provisioning the studio-cp builder VM'",
+      "echo 'provisioning the cloud-console builder VM'",
       "sw_vers || uname -a",
     ]
   }

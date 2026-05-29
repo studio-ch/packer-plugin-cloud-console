@@ -17,9 +17,9 @@ Add the plugin to your template and let Packer fetch it:
 ```hcl
 packer {
   required_plugins {
-    studio-cp = {
+    cloud-console = {
       version = ">= 0.1.0"
-      source  = "github.com/studio-ch/studio-cp"
+      source  = "github.com/studio-ch/cloud-console"
     }
   }
 }
@@ -32,9 +32,9 @@ packer init .
 Or build and install it manually:
 
 ```bash
-go install github.com/studio-ch/packer-plugin-studio-cp@latest
+go install github.com/studio-ch/packer-plugin-cloud-console@latest
 # or, for a local checkout:
-go build -o ~/.packer.d/plugins/packer-plugin-studio-cp .
+go build -o ~/.packer.d/plugins/packer-plugin-cloud-console .
 ```
 
 ## Authentication
@@ -45,8 +45,8 @@ Xcloud service enabled), then provide it to the plugin. The key is sent as
 
 | Config field   | Environment fallback     |
 | -------------- | ------------------------ |
-| `api_endpoint` | `STUDIO_CP_API_ENDPOINT` |
-| `api_token`    | `STUDIO_CP_API_TOKEN`    |
+| `api_endpoint` | `CLOUD_CONSOLE_API_ENDPOINT` |
+| `api_token`    | `CLOUD_CONSOLE_API_TOKEN`    |
 
 ## Quick start
 
@@ -54,14 +54,14 @@ See [`example.pkr.hcl`](./example.pkr.hcl) for a complete macOS build. The
 short version:
 
 ```hcl
-source "studio-cp" "macos" {
+source "cloud-console" "macos" {
   region_id  = "<your-region-uuid>"
   pull_image = "ghcr.io/your-org/macos-base:latest"  # base to build from
   push_image = "ghcr.io/your-org/macos-built:latest" # where the result lands
 }
 
 build {
-  sources = ["source.studio-cp.macos"]
+  sources = ["source.cloud-console.macos"]
 
   provisioner "shell" {
     inline = ["sw_vers", "echo 'baking the image'"]
@@ -70,8 +70,8 @@ build {
 ```
 
 ```bash
-export STUDIO_CP_API_ENDPOINT="https://<your-cloud-console-host>"
-export STUDIO_CP_API_TOKEN="<your-api-key>"
+export CLOUD_CONSOLE_API_ENDPOINT="https://<your-cloud-console-host>"
+export CLOUD_CONSOLE_API_TOKEN="<your-api-key>"
 packer build example.pkr.hcl
 ```
 

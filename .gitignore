@@ -7,7 +7,7 @@
 *.dylib
 
 # Compiled plugin binaries
-packer-plugin-studio-cp
+packer-plugin-cloud-console
 
 # Test binaries / output
 *.test

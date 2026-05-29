@@ -15,12 +15,12 @@ import (
 
 //go:generate packer-sdc mapstructure-to-hcl2 -type Config
 
-// Config is the studio-cp Packer builder configuration. It is decoded from
+// Config is the cloud-console Packer builder configuration. It is decoded from
 // the HCL/JSON template via mapstructure and validated in prepare().
 type Config struct {
 	common.PackerConfig `mapstructure:",squash"`
 
-	// studio-cp API connection. Falls back to STUDIO_CP_* environment
+	// cloud-console API connection. Falls back to CLOUD_CONSOLE_* environment
 	// variables. APIEndpoint is the API host (with or without scheme);
 	// APIToken is a tenant API key with the write:resources scope.
 	APIEndpoint string `mapstructure:"api_endpoint"`
@@ -87,10 +87,10 @@ type Config struct {
 func (c *Config) prepare() ([]string, error) {
 	// Connection defaults / ENV fallbacks.
 	if c.APIEndpoint == "" {
-		c.APIEndpoint = os.Getenv("STUDIO_CP_API_ENDPOINT")
+		c.APIEndpoint = os.Getenv("CLOUD_CONSOLE_API_ENDPOINT")
 	}
 	if c.APIToken == "" {
-		c.APIToken = os.Getenv("STUDIO_CP_API_TOKEN")
+		c.APIToken = os.Getenv("CLOUD_CONSOLE_API_TOKEN")
 	}
 
 	// Identity defaults.
@@ -150,10 +150,10 @@ func (c *Config) prepare() ([]string, error) {
 
 	// Required connection fields.
 	if c.APIToken == "" {
-		errs = append(errs, errors.New("'api_token' is required (or set STUDIO_CP_API_TOKEN)"))
+		errs = append(errs, errors.New("'api_token' is required (or set CLOUD_CONSOLE_API_TOKEN)"))
 	}
 	if c.APIEndpoint == "" {
-		errs = append(errs, errors.New("'api_endpoint' is required (or set STUDIO_CP_API_ENDPOINT)"))
+		errs = append(errs, errors.New("'api_endpoint' is required (or set CLOUD_CONSOLE_API_ENDPOINT)"))
 	}
 	if c.RegionID == "" {
 		errs = append(errs, errors.New("'region_id' is required"))
@@ -185,7 +185,7 @@ func (c *Config) prepare() ([]string, error) {
 
 func (c *Config) decode(raws ...any) error {
 	return config.Decode(c, &config.DecodeOpts{
-		PluginType:         "studio-cp",
+		PluginType:         "cloud-console",
 		Interpolate:        true,
 		InterpolateContext: &c.ctx,
 		InterpolateFilter:  &interpolate.RenderFilter{},

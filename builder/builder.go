@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/multistep/commonsteps"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 
-	"github.com/studio-ch/packer-plugin-studio-cp/apiclient"
+	"github.com/studio-ch/packer-plugin-cloud-console/apiclient"
 )
 
 // BuilderId uniquely identifies artifacts produced by this builder.
@@ -39,7 +39,7 @@ func (b *Builder) Prepare(raws ...any) ([]string, []string, error) {
 func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (packer.Artifact, error) {
 	client := apiclient.New(b.config.APIEndpoint, b.config.APIToken, nil)
 
-	ui.Sayf("Using studio-cp API at %s", b.config.APIEndpoint)
+	ui.Sayf("Using cloud-console API at %s", b.config.APIEndpoint)
 
 	state := new(multistep.BasicStateBag)
 	state.Put("config", &b.config)

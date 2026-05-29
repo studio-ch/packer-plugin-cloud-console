@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 
-	"github.com/studio-ch/packer-plugin-studio-cp/apiclient"
+	"github.com/studio-ch/packer-plugin-cloud-console/apiclient"
 )
 
 // StepWaitRunning polls the instance until it reaches status "running" with

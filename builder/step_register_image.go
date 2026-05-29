@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	"github.com/hashicorp/packer-plugin-sdk/packer"
 
-	"github.com/studio-ch/packer-plugin-studio-cp/apiclient"
+	"github.com/studio-ch/packer-plugin-cloud-console/apiclient"
 )
 
 // StepRegisterImage resolves the base image. When pull_image is set it

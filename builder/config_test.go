@@ -20,8 +20,8 @@ func baseConfig() *Config {
 }
 
 func TestPrepareAppliesDefaults(t *testing.T) {
-	t.Setenv("STUDIO_CP_API_ENDPOINT", "")
-	t.Setenv("STUDIO_CP_API_TOKEN", "")
+	t.Setenv("CLOUD_CONSOLE_API_ENDPOINT", "")
+	t.Setenv("CLOUD_CONSOLE_API_TOKEN", "")
 
 	cfg := baseConfig()
 	if _, err := cfg.prepare(); err != nil {
@@ -67,8 +67,8 @@ func TestPrepareUseElasticIPExplicitFalse(t *testing.T) {
 }
 
 func TestPrepareEnvFallback(t *testing.T) {
-	t.Setenv("STUDIO_CP_API_ENDPOINT", "https://env.example.test")
-	t.Setenv("STUDIO_CP_API_TOKEN", "env-token")
+	t.Setenv("CLOUD_CONSOLE_API_ENDPOINT", "https://env.example.test")
+	t.Setenv("CLOUD_CONSOLE_API_TOKEN", "env-token")
 
 	cfg := &Config{
 		RegionID: testRegionID,
@@ -87,7 +87,7 @@ func TestPrepareEnvFallback(t *testing.T) {
 }
 
 func TestPrepareMissingAPIToken(t *testing.T) {
-	t.Setenv("STUDIO_CP_API_TOKEN", "")
+	t.Setenv("CLOUD_CONSOLE_API_TOKEN", "")
 	cfg := baseConfig()
 	cfg.APIToken = ""
 	if _, err := cfg.prepare(); err == nil {

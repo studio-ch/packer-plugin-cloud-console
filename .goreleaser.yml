@@ -4,9 +4,9 @@
 version: 2
 
 # The project name must match the GitHub repo / plugin binary name so the
-# produced artifacts are named packer-plugin-studio-cp_* (otherwise GoReleaser
+# produced artifacts are named packer-plugin-cloud-console_* (otherwise GoReleaser
 # would derive the name from the working directory).
-project_name: packer-plugin-studio-cp
+project_name: packer-plugin-cloud-console
 
 env:
   - CGO_ENABLED=0

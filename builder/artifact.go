@@ -1,6 +1,6 @@
 package builder
 
-// Artifact describes the result of a studio-cp build. When push_image is set
+// Artifact describes the result of a cloud-console build. When push_image is set
 // it points at the pushed OCI image; otherwise it identifies the (kept) VM.
 type Artifact struct {
 	VMName   string
@@ -31,6 +31,6 @@ func (a *Artifact) Id() string {
 	return a.RegionID + "/" + a.VMName
 }
 
-func (a *Artifact) String() string { return "studio-cp VM: " + a.Id() }
+func (a *Artifact) String() string { return "cloud-console VM: " + a.Id() }
 func (*Artifact) State(string) any { return nil }
 func (*Artifact) Destroy() error   { return nil }
